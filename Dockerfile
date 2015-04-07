@@ -13,6 +13,8 @@ RUN pip install --upgrade virtualenv
 
 VOLUME /mnt/jenkins
 
+ENV JENKINS_OPTS --prefix=/jenkins
+
 # END CUSTOM
 
 ENV JENKINS_HOME /var/jenkins_home
