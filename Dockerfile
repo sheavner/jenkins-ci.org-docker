@@ -15,7 +15,7 @@ RUN apt-get install -y apt-transport-https
 RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
 RUN echo "deb https://get.docker.com/ubuntu docker main" > /etc/apt/sources.list.d/docker.list
 
-RUN apt-get update && apt-get install -y --no-install-recommends wget git curl zip openssh-client openjdk-6-jdk openjdk-7-jdk ruby python python-pip libffi-dev libssl-dev python-dev build-essential nodejs nodejs-legacy npm lxc-docker-1.5.0 && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends wget git curl zip openssh-client openjdk-6-jdk openjdk-7-jdk ruby python python-pip libffi-dev libssl-dev python-dev build-essential nodejs nodejs-legacy npm lxc-docker-1.6.0 && rm -rf /var/lib/apt/lists/*
 RUN locale-gen en_US en_US.UTF-8 && dpkg-reconfigure locales
 ENV LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 RUN gem install sass
@@ -31,11 +31,9 @@ ENV DEBIAN_FRONTEND text
 
 ENV JENKINS_HOME /var/jenkins_home
 
-# Jenkins is ran with user `jenkins`, uid = 1000
-# If you bind mount a volume from host/vloume from a data container, 
-# ensure you use same uid
-RUN addgroup --gid 109 jenkins-docker
-RUN useradd -d "$JENKINS_HOME" -u 1000 -G 109 -m -s /bin/bash jenkins
+# Jenkins is ran with user `jenkins`, uid = 1000 in docker group 999
+# If you bind mount a volume from host/volume from a data container, ensure you use same uid
+RUN useradd -d "$JENKINS_HOME" -u 1000 -G 999 -m -s /bin/bash jenkins
 
 # Jenkins home directoy is a volume, so configuration and build history 
 # can be persisted and survive image upgrades
